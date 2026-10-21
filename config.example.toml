@@ -1,0 +1,11 @@
+# Copy to config.toml (git-ignored) and adjust.
+[seller]
+name = "Erika Musterfrau"
+street = "Musterweg 1"
+postcode = "12345"
+city = "Musterstadt"
+tax_number = "12/345/67890"
+iban = "DE89 3704 0044 0532 0130 00"
+# bic = "COBADEFFXXX"
+# email = "erika@example.com"
+# exemption_reason = "..."   # defaults to the § 19 UStG notice

@@ -1,0 +1,63 @@
+[project]
+name = "pdf-to-zugpferd"
+version = "0.1.0"
+description = "Convert invoice PDFs from LibreOffice/MS Office into ZUGFeRD (EN 16931) PDFs"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = ["zugferd", "factur-x", "e-invoice", "en16931", "xrechnung", "pdf"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Natural Language :: German",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Typing :: Typed",
+]
+readme = "README.md"
+authors = [
+    { name = "Pascal Zimmermann", email = "pascal.zimmermann@theiotstudio.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "drafthorse>=2025.2.0",
+    "pdfplumber>=0.11.10",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "bandit>=1.9.4",
+    "lxml>=6.1.3",
+    "pip-audit>=2.10.1",
+    "pyinstaller>=6.22.3",
+    "pypdf>=6.21.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "reportlab>=5.0.1",
+    "ruff>=0.17.1",
+]
+
+[project.scripts]
+pdf-to-zugpferd = "pdf_to_zugpferd.cli:main"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S603"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=pdf_to_zugpferd --cov-report=term-missing"

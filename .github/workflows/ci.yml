@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run pytest
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - run: uv run bandit -q -r src
+      - run: uv run pip-audit --skip-editable
+
+  binary-e2e:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: Build single-file binary
+        run: >
+          uv run pyinstaller --onefile --name pdf-to-zugpferd
+          --collect-data drafthorse --collect-data pdfminer
+          --noconfirm packaging_entry.py
+      - name: E2E tests against the binary
+        shell: bash
+        run: |
+          BIN="$PWD/dist/pdf-to-zugpferd"
+          if [ "$RUNNER_OS" = "Windows" ]; then BIN="$BIN.exe"; fi
+          PDF_TO_ZUGPFERD_BIN="$BIN" uv run pytest tests/test_e2e.py --no-cov
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pdf-to-zugpferd-${{ runner.os }}
+          path: dist/pdf-to-zugpferd*
