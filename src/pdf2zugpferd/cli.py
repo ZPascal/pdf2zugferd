@@ -14,7 +14,7 @@ from .zugferd import build_xml, embed
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="pdf-to-zugpferd",
+        prog="pdf2zugpferd",
         description="Convert an invoice PDF into a ZUGFeRD (EN 16931) PDF.",
     )
     parser.add_argument("pdf", type=Path, help="input invoice PDF")

@@ -7,6 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from lxml import etree
 from pypdf import PdfReader
 
@@ -22,10 +23,10 @@ NS = {
 
 
 def _command() -> list[str]:
-    binary = os.environ.get("PDF_TO_ZUGPFERD_BIN")
+    binary = os.environ.get("PDF2ZUGPFERD_BIN")
     if binary:
         return [binary]
-    return [sys.executable, "-m", "pdf_to_zugpferd"]
+    return [sys.executable, "-m", "pdf2zugpferd"]
 
 
 def _embedded_xml(pdf: Path) -> etree._Element:
@@ -95,3 +96,19 @@ def test_bad_input_gives_clean_error(config_file: Path, tmp_path: Path) -> None:
 def test_mismatching_total_fails(config_file: Path, tmp_path: Path) -> None:
     pdf = make_invoice_pdf(tmp_path / "bad.pdf", total="1,00")
     assert _run(pdf, "-c", config_file).returncode == 1
+
+
+SAMPLE_PDF = Path(__file__).parent / "fixtures" / "sample.pdf"
+
+
+def test_sample_pdf_embeds_zugferd_xml(config_file: Path, tmp_path: Path) -> None:
+    if not SAMPLE_PDF.exists():
+        if os.environ.get("CI"):
+            pytest.fail(f"{SAMPLE_PDF} is missing")
+        pytest.skip(f"{SAMPLE_PDF} not provided")
+    out = tmp_path / "sample_zugferd.pdf"
+    result = _run(SAMPLE_PDF, "-c", config_file, "-o", out)
+    assert result.returncode == 0, result.stderr
+    assert out.read_bytes().startswith(b"%PDF")
+    xml = _embedded_xml(out)
+    assert xml.xpath("//rsm:ExchangedDocument/ram:ID", namespaces=NS)

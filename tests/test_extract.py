@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from pdf_to_zugpferd.extract import (
+from pdf2zugpferd.extract import (
     ExtractionError,
     extract_invoice,
     parse_invoice,

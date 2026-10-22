@@ -1,4 +1,4 @@
-# pdf-to-zugpferd
+# pdf2zugpferd
 
 Turn an invoice PDF exported from LibreOffice, OpenOffice or MS Office into a
 **ZUGFeRD / Factur-X (EN 16931)** PDF: the original pages plus an embedded,
@@ -16,17 +16,21 @@ needed for office-generated PDFs. Seller data and IBAN come from a config file.
 
 ## Install
 
+The tool is published on [PyPI](https://pypi.org/project/pdf2zugpferd/) as
+`pdf2zugpferd` (Python >= 3.12). The package, the import name and the command
+are all called `pdf2zugpferd`.
+
 ```bash
-uvx pdf-to-zugpferd --help          # run without installing
-pipx install pdf-to-zugpferd        # or: pip install pdf-to-zugpferd
+uvx pdf2zugpferd --help          # run without installing
+pipx install pdf2zugpferd        # or: pip install pdf2zugpferd
 ```
 
 ## Usage
 
 ```bash
 cp config.example.toml config.toml   # fill in your data
-pdf-to-zugpferd invoice.pdf -c config.toml        # -> invoice_zugferd.pdf
-pdf-to-zugpferd invoice.pdf -c config.toml -o out.pdf --xml-only --force
+pdf2zugpferd invoice.pdf -c config.toml        # -> invoice_zugferd.pdf
+pdf2zugpferd invoice.pdf -c config.toml -o out.pdf --xml-only --force
 ```
 
 Without Python, download a single-file binary from the GitHub release
@@ -34,7 +38,7 @@ Without Python, download a single-file binary from the GitHub release
 
 ```bash
 uv sync
-uv run pdf-to-zugpferd invoice.pdf -c config.toml
+uv run pdf2zugpferd invoice.pdf -c config.toml
 ```
 
 ## Supported invoice layout
