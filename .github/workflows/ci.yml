@@ -12,10 +12,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -26,10 +26,10 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --locked
       - run: uv run bandit -q -r src
       - run: uv run pip-audit --skip-editable
@@ -42,10 +42,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --locked
       - name: Build single-file binary
         run: >
@@ -58,7 +58,7 @@ jobs:
           BIN="$PWD/dist/pdf-to-zugpferd"
           if [ "$RUNNER_OS" = "Windows" ]; then BIN="$BIN.exe"; fi
           PDF_TO_ZUGPFERD_BIN="$BIN" uv run pytest tests/test_e2e.py --no-cov
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: pdf-to-zugpferd-${{ runner.os }}
           path: dist/pdf-to-zugpferd*
