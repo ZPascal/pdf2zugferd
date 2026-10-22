@@ -23,6 +23,21 @@ _LINE_RE = re.compile(
     rf"^(?P<pos>\d+)\s+(?P<name>.+?)\s+(?P<menge>\d+\s+\S+)\s+"
     rf"(?P<qty>\d+(?:,\d+)?)\s+(?P<price>{_AMOUNT})\s+(?P<total>{_AMOUNT})$"
 )
+_SIMPLE_LINE_RE = re.compile(
+    rf"^(?P<pos>\d+)\s+(?P<name>.+?)\s+(?P<qty>\d+(?:,\d+)?)\s+(?P<unit>[^\d\s]\S*)\s+"
+    rf"(?P<price>{_AMOUNT})\s+(?P<total>{_AMOUNT})$"
+)
+# UN/ECE Rec. 20 codes for the units seen on German invoices.
+_UNIT_CODES = {
+    "monat": "MON",
+    "monate": "MON",
+    "tag": "DAY",
+    "tage": "DAY",
+    "stunde": "HUR",
+    "stunden": "HUR",
+    "stück": "C62",
+    "stk": "C62",
+}
 _STOP_RE = re.compile(r"^(Betrag\b|Summe\b|Gesamt)")
 _POSTCODE_RE = re.compile(r"^(?P<zip>\d{5})\s+(?P<city>.+)$")
 
@@ -76,10 +91,16 @@ def _parse_buyer(lines: list[str]) -> Party:
     raise ExtractionError("buyer address block not found")
 
 
+def _unit_code(match: re.Match[str]) -> str:
+    if "unit" not in match.groupdict() or match["unit"] is None:
+        return "DAY"
+    return _UNIT_CODES.get(match["unit"].lower(), "C62")
+
+
 def _parse_lines(lines: list[str]) -> list[Line]:
     matches: list[tuple[re.Match[str], list[str]]] = []
     for line in lines:
-        match = _LINE_RE.match(line)
+        match = _LINE_RE.match(line) or _SIMPLE_LINE_RE.match(line)
         if match:
             matches.append((match, []))
         elif _STOP_RE.match(line):
@@ -94,6 +115,7 @@ def _parse_lines(lines: list[str]) -> list[Line]:
             quantity=_decimal(m["qty"]),
             unit_price=_decimal(m["price"]),
             total=_decimal(m["total"]),
+            unit_code=_unit_code(m),
         )
         for m, extra in matches
     ]

@@ -1,5 +1,5 @@
 [project]
-name = "pdf-to-zugpferd"
+name = "pdf2zugpferd"
 version = "0.1.0"
 description = "Convert invoice PDFs from LibreOffice/MS Office into ZUGFeRD (EN 16931) PDFs"
 license = "Apache-2.0"
@@ -46,7 +46,7 @@ dev = [
 ]
 
 [project.scripts]
-pdf-to-zugpferd = "pdf_to_zugpferd.cli:main"
+pdf2zugpferd = "pdf2zugpferd.cli:main"
 
 [tool.ruff]
 line-length = 88
@@ -60,4 +60,4 @@ select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=pdf_to_zugpferd --cov-report=term-missing"
+addopts = "--cov=pdf2zugpferd --cov-report=term-missing"

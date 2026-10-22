@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from pypdf import PdfReader
 
-from pdf_to_zugpferd import extract
-from pdf_to_zugpferd.cli import main
+from pdf2zugpferd import extract
+from pdf2zugpferd.cli import main
 
 
 def test_main_writes_pdf_and_xml(
