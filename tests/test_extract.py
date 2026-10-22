@@ -57,3 +57,18 @@ def test_garbage_file_is_rejected(tmp_path: Path) -> None:
 def test_missing_field_is_reported() -> None:
     with pytest.raises(ExtractionError, match="Rechnungsdatum"):
         parse_invoice("Rechnung\nnothing here")
+
+
+def test_line_with_quantity_and_unit() -> None:
+    text = (
+        "Max Mustermann | Musterstrasse 1 | 12345 Musterhausen\n"
+        "Muster GmbH\nMusterstrasse 2\n12345 Musterhausen\n"
+        "Rechnungsdatum:\n24.12.2025\nRechnungsnummer:\n0001\n"
+        "Kundennummer:\n1111\n"
+        "1 Test 1 Monat 10,00 10,00\nBetrag 10,00 €\n"
+    )
+    (line,) = parse_invoice(text).lines
+    assert line.name == "Test"
+    assert line.quantity == Decimal(1)
+    assert line.unit_code == "MON"
+    assert line.total == Decimal("10.00")
