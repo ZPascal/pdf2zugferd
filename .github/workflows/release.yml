@@ -42,13 +42,13 @@ jobs:
       - run: uv sync --locked
       - name: Build single-file binary
         run: >
-          uv run pyinstaller --onefile --name pdf2zugpferd-${{ runner.os }}
+          uv run pyinstaller --onefile --name pdf2zugferd-${{ runner.os }}
           --collect-data drafthorse --collect-data pdfminer
           --noconfirm packaging_entry.py
       - uses: actions/upload-artifact@v7
         with:
           name: binary-${{ runner.os }}
-          path: dist/pdf2zugpferd*
+          path: dist/pdf2zugferd*
 
   publish-pypi:
     needs: [build, binaries]

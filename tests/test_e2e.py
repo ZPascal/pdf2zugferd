@@ -23,10 +23,10 @@ NS = {
 
 
 def _command() -> list[str]:
-    binary = os.environ.get("PDF2ZUGPFERD_BIN")
+    binary = os.environ.get("PDF2ZUGFERD_BIN")
     if binary:
         return [binary]
-    return [sys.executable, "-m", "pdf2zugpferd"]
+    return [sys.executable, "-m", "pdf2zugferd"]
 
 
 def _embedded_xml(pdf: Path) -> etree._Element:

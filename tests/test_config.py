@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from pdf2zugpferd.config import ConfigError, load_config
+from pdf2zugferd.config import ConfigError, load_config
 
 
 def test_loads_and_normalises_iban(config_file: Path) -> None:
